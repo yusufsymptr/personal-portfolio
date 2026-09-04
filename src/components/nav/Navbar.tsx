@@ -5,83 +5,90 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { getDictionary, Locale } from "@/lib/i18n/dictionaries";
 
-const navKeys = ["home", "about", "projects", "skills", "contact"] as const;
-const navPaths: Record<(typeof navKeys)[number], string> = {
-  home: "",
-  about: "/about",
-  projects: "/projects",
-  skills: "/skills",
-  contact: "/contact",
-};
-
 export default function Navbar({ locale }: { locale: Locale }) {
   const pathname = usePathname();
   const dict = getDictionary(locale);
-  const otherLocale: Locale = locale === "en" ? "id" : "en";
 
-  // Ganti prefix locale di URL saat ini, biar posisi halaman tetap sama pas switch bahasa
-  const switchHref = pathname.replace(`/${locale}`, `/${otherLocale}`) || `/${otherLocale}`;
+  // Daftar rute navigasi
+  const navItems = [
+    { key: "home", href: `/${locale}` },
+    { key: "about", href: `/${locale}/about` },
+    { key: "projects", href: `/${locale}/projects` },
+    { key: "skills", href: `/${locale}/skills` },
+    { key: "contact", href: `/${locale}/contact` },
+  ];
 
   return (
     <>
-      {/* Desktop Navigation */}
-      <nav className="hidden md:flex fixed top-0 w-full z-50 bg-background border-b border-borderLight">
-        <div className="flex w-full max-w-[1200px] mx-auto px-8 h-20 items-center justify-end gap-10">
-          {navKeys.map((key) => {
-            const href = `/${locale}${navPaths[key]}`;
-            const isActive = pathname === href;
-            return (
-              <Link
-                key={key}
-                href={href}
-                className="relative group flex items-baseline text-sm font-medium"
+      {/* DESKTOP NAV (Atas) */}
+      <nav className="hidden md:flex fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-borderLight">
+        <div className="flex w-full max-w-[1200px] mx-auto px-8 h-20 items-center justify-between">
+          
+          {/* Kiri: Logo */}
+          <Link href={`/${locale}`} className="font-heading font-bold text-xl tracking-tighter hover:text-accent transition-colors">
+            YUSUF<span className="text-accent">.</span>
+          </Link>
+
+          {/* Kanan: Menu & Bahasa */}
+          <div className="flex items-center gap-8">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link key={item.key} href={item.href} className="relative group text-sm font-medium">
+                  <span className={`transition-colors duration-200 ${isActive ? "text-textPrimary" : "text-textPrimary/60 group-hover:text-textPrimary"}`}>
+                    {dict.nav[item.key as keyof typeof dict.nav]}
+                  </span>
+                  {isActive && (
+                    <motion.div 
+                      layoutId="navbar-indicator-desktop" 
+                      className="absolute -bottom-2 left-0 right-0 h-[2px] bg-accent" 
+                    />
+                  )}
+                </Link>
+              );
+            })}
+            
+            {/* Language Switcher */}
+            <div className="pl-4 border-l border-borderLight flex items-center h-4">
+              <Link 
+                href={pathname.replace(`/${locale}`, `/${locale === 'en' ? 'id' : 'en'}`)}
+                className="text-sm font-medium text-textPrimary/50 hover:text-textPrimary transition-colors"
               >
-                <span className={`transition-colors duration-200 ${isActive ? "text-textPrimary" : "text-textPrimary/60 group-hover:text-textPrimary"}`}>
-                  {dict.nav[key]}
+                {locale === 'en' ? 'ID' : 'EN'}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* MOBILE NAV (Bawah) */}
+      <nav className="md:hidden fixed bottom-0 w-full z-50 bg-background/90 backdrop-blur-lg border-t border-borderLight pb-safe">
+        <div className="flex justify-around items-center h-16 px-4">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link key={item.key} href={item.href} className="relative flex flex-col items-center justify-center w-full h-full">
+                <span className={`text-[10px] font-medium uppercase tracking-wider transition-colors duration-200 ${isActive ? "text-accent" : "text-textPrimary/50"}`}>
+                  {dict.nav[item.key as keyof typeof dict.nav]}
                 </span>
                 {isActive && (
-                  <motion.div
-                    layoutId="nav-indicator-desktop"
-                    className="absolute -bottom-2 left-0 right-0 h-[2px] bg-accent"
-                    transition={{ duration: 0.3 }}
+                  <motion.div 
+                    layoutId="navbar-indicator-mobile" 
+                    className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[2px] bg-accent rounded-b-full" 
                   />
                 )}
               </Link>
             );
           })}
-
-          <Link
-            href={switchHref}
-            className="text-sm font-medium text-textPrimary/60 hover:text-textPrimary transition-colors duration-200 border-l border-borderLight pl-6"
+          
+          {/* Language Switcher Mobile */}
+          <Link 
+            href={pathname.replace(`/${locale}`, `/${locale === 'en' ? 'id' : 'en'}`)}
+            className="flex flex-col items-center justify-center h-full px-2"
           >
-            {otherLocale.toUpperCase()}
-          </Link>
-        </div>
-      </nav>
-
-      {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 w-full z-50 bg-background border-t border-borderLight">
-        <div className="flex justify-around items-center h-16 px-2">
-          {navKeys.map((key) => {
-            const href = `/${locale}${navPaths[key]}`;
-            const isActive = pathname === href;
-            return (
-              <Link
-                key={key}
-                href={href}
-                className={`flex flex-col items-center justify-center w-full h-full transition-colors duration-200 ${
-                  isActive ? "text-accent" : "text-textPrimary/40"
-                }`}
-              >
-                <span className="text-xs font-medium">{dict.nav[key]}</span>
-              </Link>
-            );
-          })}
-          <Link
-            href={switchHref}
-            className="flex flex-col items-center justify-center w-full h-full text-textPrimary/40"
-          >
-            <span className="text-xs font-medium">{otherLocale.toUpperCase()}</span>
+             <span className="text-[10px] font-medium uppercase tracking-wider text-textPrimary/50">
+               {locale === 'en' ? 'ID' : 'EN'}
+             </span>
           </Link>
         </div>
       </nav>
