@@ -86,6 +86,50 @@ const dictionaries = {
           tags: ["Unity", "C#", "3D Development"]
         }
       ]
+    },
+    skills: {
+      title: "System Competency",
+      subtitle: "My technical expertise visualized as real-time system data extraction.",
+      statusLoading: "EXTRACTING DATA...",
+      statusComplete: "SYSTEM READY",
+      items: [
+        {
+          name: "Full-Stack Web Architecture",
+          percentage: 85,
+          description: "Engineering scalable server-side logic and responsive client interfaces using Laravel and modern web frameworks."
+        },
+        {
+          name: "Data Engineering & Modeling",
+          percentage: 80,
+          description: "Designing optimized relational schemas, ETL pipelines, and robust data warehousing solutions for analytics."
+        },
+        {
+          name: "Infrastructure & Network Topology",
+          percentage: 75,
+          description: "Configuring robust enterprise network protocols, system communications, and maintaining secure data flow."
+        },
+        {
+          name: "Interactive Media & Logic Synthesis",
+          percentage: 65,
+          description: "Developing complex event systems, physics simulations, and immersive virtual environments using Unity and RPG Maker."
+        }
+      ]
+    },
+    contact: {
+      title: "Get in Touch",
+      subtitle: "Have a project in mind, a question, or just want to say hi? Fill out the form below or reach out directly.",
+      directInfo: "Contact Information",
+      availability: "Availability",
+      availabilityValue: "Open for Opportunities (Remote)",
+      socials: "Digital Presence",
+      form: {
+        name: "Your Name",
+        email: "Email Address",
+        message: "Your Message",
+        send: "Send Message",
+        sending: "Sending...",
+        sent: "Message Sent Successfully!"
+      }
     }
   },
   id: {
@@ -110,7 +154,7 @@ const dictionaries = {
     },
     about: {
       title: "Tentang Saya",
-      bio: "Saya adalah mahasiswa Teknik Informatika semester 5 yang suka membangun aplikasi web full stack. Saya menghabiskan banyak waktu mengurus backend dan menggunakan framework seperti Laravel untuk membuat sistem yang berjalan lancar. Ke depannya, fokus kompetensi utama saya adalah memperdalam keahlian di bidang Pengembangan Mobile dan Machine Learning. Saya selalu berpegang pada satu moto pribadi: I may not be #1, but I'm beyond #2.",
+      bio: "Saya adalah mahasiswa Teknik Informatika semester 5 yang suka membangun aplikasi web full stack. Saya menghabiskan banyak waktu mengurus backend dan menggunakan framework seperti Laravel untuk membuat sistem yang berjalan lancar. Ke depannya, fokus kompetensi utama saya adalah memperdalam keahlian di bidang Pengembangan Mobile dan Machine Learning. Saya selalu berpegang pada satu moto pribadi: Mungkin saya bukan nomor 1, tapi saya jauh melampaui nomor 2.",
       educationTitle: "Pendidikan",
       education: [
         {
@@ -173,6 +217,50 @@ const dictionaries = {
           tags: ["Unity", "C#", "3D Development"]
         }
       ]
+    },
+    skills: {
+      title: "Kompetensi Sistem",
+      subtitle: "Tingkat penguasaan teknis yang divisualisasikan sebagai ekstraksi data sistem secara real-time.",
+      statusLoading: "EKSTRAKSI DATA...",
+      statusComplete: "SISTEM SIAP",
+      items: [
+        {
+          name: "Arsitektur Web Full-Stack",
+          percentage: 85,
+          description: "Membangun logika sisi server yang skalabel dan antarmuka klien yang responsif menggunakan Laravel serta framework web modern."
+        },
+        {
+          name: "Rekayasa & Pemodelan Data",
+          percentage: 80,
+          description: "Merancang skema relasional yang teroptimasi, pipeline ETL, dan solusi data warehousing yang tangguh untuk kebutuhan analitik."
+        },
+        {
+          name: "Infrastruktur & Topologi Jaringan",
+          percentage: 75,
+          description: "Mengonfigurasi protokol jaringan skala enterprise, komunikasi sistem, dan menjaga keamanan aliran data."
+        },
+        {
+          name: "Media Interaktif & Sintesis Logika",
+          percentage: 65,
+          description: "Mengembangkan sistem event yang kompleks, simulasi fisika, dan lingkungan virtual imersif menggunakan Unity dan RPG Maker."
+        }
+      ]
+    },
+    contact: {
+      title: "Hubungi Saya",
+      subtitle: "Ada ide proyek, pertanyaan, atau sekadar ingin menyapa? Silakan isi formulir di bawah atau hubungi saya langsung.",
+      directInfo: "Informasi Kontak",
+      availability: "Ketersediaan",
+      availabilityValue: "Terbuka untuk Peluang (Remote)",
+      socials: "Kehadiran Digital",
+      form: {
+        name: "Nama Anda",
+        email: "Alamat Email",
+        message: "Pesan Anda",
+        send: "Kirim Pesan",
+        sending: "Mengirim...",
+        sent: "Pesan Berhasil Terkirim!"
+      }
     }
   },
 };

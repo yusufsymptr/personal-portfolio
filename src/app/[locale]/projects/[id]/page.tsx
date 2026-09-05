@@ -30,7 +30,7 @@ export default function ProjectDetail({ params }: { params: Promise<{ locale: Lo
 
   const container: Variants = {
     hidden: {},
-    visible: { transition: { staggerChildren: shouldReduceMotion ? 0 : 0.15 } }
+    visible: { transition: { staggerChildren: shouldReduceMotion ? 0 : 0.15, delayChildren: 0.2 } }
   };
 
   const itemVariant: Variants = {
@@ -43,10 +43,8 @@ export default function ProjectDetail({ params }: { params: Promise<{ locale: Lo
   };
 
   return (
-    // PERBAIKAN: pt-32 diubah menjadi pt-24 agar tidak terlalu ke bawah
     <main className="relative min-h-screen pt-24 pb-24 px-6 md:px-8 group">
       
-      {/* Background Grid & Spotlight */}
       <div className="fixed inset-0 z-[-2] bg-[radial-gradient(#E4E2DD_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80" />
       
       {!shouldReduceMotion && (
@@ -63,7 +61,6 @@ export default function ProjectDetail({ params }: { params: Promise<{ locale: Lo
         
         <motion.div variants={container} initial="hidden" animate="visible">
           
-          {/* Tombol Back */}
           <motion.div variants={itemVariant} className="mb-10 mt-4">
             <Link 
               href={`/${locale}/projects`}
@@ -76,23 +73,31 @@ export default function ProjectDetail({ params }: { params: Promise<{ locale: Lo
             </Link>
           </motion.div>
 
-          {/* Header Proyek */}
+          {/* Morph Container untuk judul */}
           <motion.div variants={itemVariant} className="mb-12">
-            <h1 className="text-4xl md:text-5xl font-semibold mb-6 tracking-tight">
+            <motion.h1 
+              layoutId={`project-title-${project.id}`}
+              className="text-4xl md:text-5xl font-semibold mb-6 tracking-tight"
+            >
               {project.title}
-            </h1>
+            </motion.h1>
+            
             <div className="flex flex-wrap gap-3 mb-8">
               {project.tags?.map((tag: string, idx: number) => (
                 <Tag key={idx}>{tag}</Tag>
               ))}
             </div>
+            
             <p className="text-lg text-textPrimary/80 leading-relaxed max-w-3xl">
               {project.description}
             </p>
           </motion.div>
 
-          {/* Gambar Utama (Fallback dengan pengecekan aman) */}
-          <motion.div variants={itemVariant} className="relative aspect-video w-full rounded-2xl overflow-hidden border border-borderLight shadow-lg mb-12 bg-background/50">
+          {/* Morph Container untuk Gambar Utama */}
+          <motion.div 
+            layoutId={`project-image-${project.id}`}
+            className="relative aspect-video w-full rounded-2xl overflow-hidden border border-borderLight shadow-lg mb-12 bg-background/50"
+          >
             <Image 
               src={project.images[0] || "/images/unity.png"} 
               alt={`${project.title} main preview`}

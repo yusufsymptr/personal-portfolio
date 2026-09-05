@@ -3,16 +3,52 @@
 import { use, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence, useReducedMotion, Variants } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion, Variants, useMotionTemplate, useMotionValue } from "framer-motion";
 import { getDictionary, Locale } from "@/lib/i18n/dictionaries";
 import Tag from "@/components/ui/Tag";
 
-// Komponen Kartu Proyek
+// --- KOMPONEN EFEK TYPEWRITER HALUS ---
+const TypewriterText = ({ text, speed = 0.03, className = "" }: { text: string, speed?: number, className?: string }) => {
+  const characters = Array.from(text);
+  return (
+    <motion.div 
+      initial="hidden" 
+      animate="visible" 
+      variants={{
+        visible: { transition: { staggerChildren: speed } }
+      }}
+      className={className}
+    >
+      {characters.map((char, index) => (
+        <motion.span
+          key={index}
+          variants={{
+            hidden: { opacity: 0, y: 5 },
+            visible: { opacity: 1, y: 0 }
+          }}
+        >
+          {char}
+        </motion.span>
+      ))}
+    </motion.div>
+  );
+};
+
+// --- KOMPONEN KARTU DENGAN GLOWING BORDER & MORPH ID ---
 const ProjectCard = ({ project, locale }: { project: any, locale: Locale }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // State untuk melacak kursor (Glowing Border)
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
 
   useEffect(() => {
-    // Validasi ketat: pastikan images ada dan merupakan array dengan lebih dari 1 item
     if (Array.isArray(project.images) && project.images.length > 1) {
       const timer = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % project.images.length);
@@ -21,17 +57,40 @@ const ProjectCard = ({ project, locale }: { project: any, locale: Locale }) => {
     }
   }, [project.images]);
 
-  // Fallback super aman: Cek array 'images' baru -> cek string 'image' lama -> fallback gambar default
   const imageSrc = Array.isArray(project.images) && project.images.length > 0
     ? project.images[currentIndex]
-    : (project.image || "/images/nyamaw.png");
+    : (project.image || "/images/unity.png");
 
   return (
     <Link href={`/${locale}/projects/${project.id}`} className="group block h-full">
-      <div className="flex flex-col h-full bg-background/50 border border-borderLight rounded-xl overflow-hidden hover:border-accent/40 transition-colors duration-300 backdrop-blur-sm relative z-10">
+      {/* 
+        layoutId untuk Opsi 1 (Shared Layout Morph). 
+        Ini akan meleburkan kartu menjadi background detail page
+      */}
+      <motion.div 
+        layoutId={`project-container-${project.id}`}
+        onMouseMove={handleMouseMove}
+        className="relative flex flex-col h-full bg-background/50 border border-borderLight rounded-xl overflow-hidden transition-colors duration-500 backdrop-blur-sm z-10"
+      >
+        {/* Opsi 3: Magic Glowing Border - Muncul saat di-hover dan mengikuti kursor */}
+        <motion.div
+          className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100 z-20"
+          style={{
+            background: useMotionTemplate`
+              radial-gradient(
+                400px circle at ${mouseX}px ${mouseY}px,
+                rgba(59, 74, 63, 0.15),
+                transparent 80%
+              )
+            `,
+          }}
+        />
         
-        {/* Slideshow Container */}
-        <div className="relative aspect-video w-full overflow-hidden bg-borderLight/30">
+        {/* Slideshow Container (Dengan layoutId terpisah untuk gambar) */}
+        <motion.div 
+          layoutId={`project-image-${project.id}`}
+          className="relative aspect-video w-full overflow-hidden bg-borderLight/30 z-10"
+        >
           <AnimatePresence mode="popLayout">
             <motion.div
               key={currentIndex}
@@ -50,25 +109,27 @@ const ProjectCard = ({ project, locale }: { project: any, locale: Locale }) => {
               />
             </motion.div>
           </AnimatePresence>
-        </div>
+        </motion.div>
 
         {/* Content Container */}
-        <div className="p-6 flex flex-col flex-grow">
-          <h2 className="text-xl font-medium mb-3 group-hover:text-accent transition-colors duration-300">
+        <div className="p-6 flex flex-col flex-grow z-10">
+          <motion.h2 
+            layoutId={`project-title-${project.id}`}
+            className="text-xl font-medium mb-3 group-hover:text-accent transition-colors duration-300"
+          >
             {project.title}
-          </h2>
+          </motion.h2>
           <p className="text-sm text-textPrimary/70 leading-relaxed mb-6 flex-grow">
             {project.description}
           </p>
           
-          {/* Tags (dengan opsional chaining '?' untuk jaga-jaga) */}
           <div className="flex flex-wrap gap-2 mt-auto">
             {project.tags?.map((tag: string, idx: number) => (
               <Tag key={idx}>{tag}</Tag>
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </Link>
   );
 };
@@ -78,7 +139,6 @@ export default function Projects({ params }: { params: Promise<{ locale: Locale 
   const shouldReduceMotion = useReducedMotion();
   const dict = getDictionary(locale);
 
-  // Spotlight State
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -106,7 +166,6 @@ export default function Projects({ params }: { params: Promise<{ locale: Locale 
   return (
     <main className="relative min-h-screen pt-24 pb-24 px-6 md:px-8 group">
       
-      {/* Background Grid & Spotlight */}
       <div className="fixed inset-0 z-[-2] bg-[radial-gradient(#E4E2DD_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80" />
       
       {!shouldReduceMotion && (
@@ -121,22 +180,21 @@ export default function Projects({ params }: { params: Promise<{ locale: Locale 
 
       <div className="w-full max-w-[1200px] mx-auto relative z-10">
         
-        {/* Header Section */}
-        <motion.div 
-          initial="hidden"
-          animate="visible"
-          variants={container}
-          className="max-w-2xl mb-12"
-        >
-          <motion.h1 variants={itemVariant} className="text-3xl md:text-4xl font-semibold mb-4">
-            {dict.projects.title}
-          </motion.h1>
-          <motion.p variants={itemVariant} className="text-base md:text-lg text-textPrimary/70 leading-relaxed">
-            {dict.projects.subtitle}
-          </motion.p>
-        </motion.div>
+        <div className="max-w-2xl mb-12 min-h-[120px]">
+          {/* Teks muncul seperti diketik secara halus */}
+          <TypewriterText 
+            text={dict.projects.title} 
+            speed={0.06}
+            className="text-3xl md:text-4xl font-semibold mb-4" 
+          />
+          {/* Deskripsi diketik lebih cepat agar tidak menunggu lama */}
+          <TypewriterText 
+            text={dict.projects.subtitle} 
+            speed={0.015}
+            className="text-base md:text-lg text-textPrimary/70 leading-relaxed inline-block" 
+          />
+        </div>
 
-        {/* Project Grid */}
         <motion.div 
           variants={container}
           initial="hidden"
