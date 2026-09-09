@@ -6,10 +6,44 @@ import { motion, useReducedMotion, Variants } from "framer-motion";
 import Button from "@/components/ui/Button";
 import { getDictionary, Locale } from "@/lib/i18n/dictionaries";
 
-const socialLinks = [
-  { label: "GitHub", href: "https://github.com/yusufsymptr", external: true },
-  { label: "Instagram", href: "https://www.instagram.com/yusuf_symptr/", external: true },
-  { label: "Email", href: "mailto:yusufsymptr03@gmail.com", external: false },
+// Teks link dihapus, diganti dengan deretan Ikon SVG murni yang elegan
+const socialIcons = [
+  {
+    name: "LinkedIn",
+    url: "https://www.linkedin.com/in/yusuf-syamputra-6b66a5428/",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+      </svg>
+    )
+  },
+  {
+    name: "GitHub",
+    url: "https://github.com/yusufsymptr",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.26c3-.3 6-2 6-7a5.2 5.2 0 0 0-1.38-3.41 5.2 5.2 0 0 0-.12-3.41s-1.11-.36-3.6 1.34a12.8 12.8 0 0 0-7 0C5.3 1.25 4.2 1.6 4.2 1.6a5.2 5.2 0 0 0-.12 3.41A5.2 5.2 0 0 0 2.7 8.44c0 4.9 3 6.7 6 7A4.8 4.8 0 0 0 8 18.6V22"></path>
+      </svg>
+    )
+  },
+  {
+    name: "Instagram",
+    url: "https://www.instagram.com/yusuf_symptr/",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+      </svg>
+    )
+  },
+  {
+    name: "Email",
+    url: "mailto:yusufsymptr03@gmail.com",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+      </svg>
+    )
+  }
 ];
 
 const MotionLink = motion(Link);
@@ -24,7 +58,6 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
     setMousePosition({ x: mouseX, y: mouseY });
@@ -60,29 +93,28 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
 
   return (
     <>
-      {/* Menggunakan kembali struktur asli Anda yang vertikalnya sudah pas */}
       <section 
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="relative flex flex-col justify-center pt-32 pb-20 px-6 md:px-8 overflow-hidden group"
+        className="relative flex flex-1 flex-col justify-center pt-32 pb-20 px-6 md:px-8 overflow-hidden group md:flex-none"
       >
-        {/* Layer 1: Grid dasar */}
-        <div className="absolute inset-0 z-[-2] bg-[radial-gradient(#E4E2DD_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80" />
+        {/* Background Dasar Redup */}
+        <div className="absolute inset-0 z-[-2] bg-[radial-gradient(#E4E2DD_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80 pointer-events-none" />
         
-        {/* Layer 2: Grid Spotlight */}
+        {/* Efek Senter yang Diperkuat */}
         {!shouldReduceMotion && (
           <div 
-            className="absolute inset-0 z-[-1] bg-[radial-gradient(#3B4A3F_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-0 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none"
+            className="absolute inset-0 z-[-1] bg-[radial-gradient(#3B4A3F_2px,transparent_2px)] [background-size:24px_24px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
             style={{
-              WebkitMaskImage: `radial-gradient(circle 250px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent)`,
-              maskImage: `radial-gradient(circle 250px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent)`
+              WebkitMaskImage: `radial-gradient(circle 450px at ${mousePosition.x}px ${mousePosition.y}px, black 15%, transparent 80%)`,
+              maskImage: `radial-gradient(circle 450px at ${mousePosition.x}px ${mousePosition.y}px, black 15%, transparent 80%)`
             }}
           />
         )}
 
         <div className="w-full max-w-[1200px] mx-auto grid md:grid-cols-12 gap-8 items-center">
           
-          {/* Kiri: Teks */}
+          {/* Bagian Kiri: Teks & Tombol */}
           <motion.div variants={container} initial="hidden" animate="visible" className="md:col-span-7 lg:col-span-8 z-10 pointer-events-auto">
             <motion.div variants={item} className="flex items-center gap-2 mb-5">
               <span className="w-2 h-2 rounded-[2px] bg-accent" />
@@ -99,6 +131,7 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
               {dict.home.intro}
             </motion.p>
 
+            {/* BARIS TOMBOL UTAMA (View Projects & CV) */}
             <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-4">
               <MotionLink
                 href={`/${locale}/projects`}
@@ -120,28 +153,26 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
               </Button>
             </motion.div>
 
-            <motion.div variants={item} className="mt-12 flex flex-wrap items-center gap-3 text-sm text-textPrimary/60">
-              {socialLinks.map((link, idx) => (
-                <span key={link.label} className="flex items-center gap-3">
-                  <motion.a
-                    href={link.href}
-                    target={link.external ? "_blank" : undefined}
-                    rel={link.external ? "noopener noreferrer" : undefined}
-                    whileHover={{ opacity: 0.7 }}
-                    transition={{ duration: 0.15 }}
-                    className="hover:text-textPrimary transition-colors duration-200"
-                  >
-                    {link.label}
-                  </motion.a>
-                  {idx < socialLinks.length - 1 && (
-                    <span className="text-textPrimary/30">·</span>
-                  )}
-                </span>
+            {/* BARIS IKON SOSIAL (Pengganti Teks) */}
+            <motion.div variants={item} className="mt-6 flex flex-wrap items-center gap-3">
+              {socialIcons.map((social) => (
+                <a 
+                  key={social.name}
+                  href={social.url}
+                  target={social.name === "Email" ? undefined : "_blank"}
+                  rel={social.name === "Email" ? undefined : "noopener noreferrer"}
+                  className="flex items-center justify-center w-[48px] h-[48px] border border-borderLight rounded-[4px] text-textPrimary/70 hover:border-accent hover:text-accent hover:bg-accent/5 bg-background/50 backdrop-blur-sm transition-all duration-300 group"
+                  title={social.name}
+                >
+                  <div className="transform group-hover:scale-110 transition-transform duration-300">
+                    {social.icon}
+                  </div>
+                </a>
               ))}
             </motion.div>
           </motion.div>
 
-          {/* Kanan: Kubus 3D - Diperbesar (w-64 h-64) dan posisi disesuaikan */}
+          {/* Bagian Kanan: Kubus 3D */}
           <div className="hidden md:flex md:col-span-5 lg:col-span-4 justify-center lg:justify-end items-center pointer-events-none">
             <div className="relative w-64 h-64 [perspective:1200px]">
               <motion.div
@@ -150,7 +181,6 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
                 className="w-full h-full relative"
                 style={{ transformStyle: "preserve-3d" }}
               >
-                {/* Wajah-wajah Kubus - Teks SYS dihapus, jarak Z diperbesar ke 128px */}
                 <div className="absolute inset-0 border-2 border-accent/40 bg-accent/5 backdrop-blur-[2px] [transform:translateZ(128px)]" />
                 <div className="absolute inset-0 border-2 border-accent/40 bg-accent/5 backdrop-blur-[2px] [transform:rotateY(180deg)_translateZ(128px)]" />
                 <div className="absolute inset-0 border-2 border-accent/40 bg-accent/5 backdrop-blur-[2px] [transform:rotateY(90deg)_translateZ(128px)]" />
@@ -158,7 +188,6 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
                 <div className="absolute inset-0 border-2 border-accent/40 bg-accent/5 backdrop-blur-[2px] [transform:rotateX(90deg)_translateZ(128px)]" />
                 <div className="absolute inset-0 border-2 border-accent/40 bg-accent/5 backdrop-blur-[2px] [transform:rotateX(-90deg)_translateZ(128px)]" />
                 
-                {/* Inti (Core) di dalam kubus */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-accent/80 rounded-full blur-[10px]" />
               </motion.div>
             </div>
@@ -167,7 +196,7 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
       </section>
 
       {/* MARQUEE */}
-      <section className="relative flex overflow-x-hidden bg-accent text-background py-4 md:py-5 border-y border-borderLight">
+      <section className="relative flex shrink-0 overflow-x-hidden bg-accent text-background py-4 md:py-5 border-y border-borderLight">
         <motion.div
           animate={shouldReduceMotion ? {} : { x: ["0%", "-50%"] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}

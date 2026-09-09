@@ -1,6 +1,6 @@
 import Navbar from "@/components/nav/Navbar";
 import { Locale } from "@/lib/i18n/dictionaries";
-
+import Preloader from "@/components/Preloader";
 export default async function LocaleLayout({
   children,
   params,
@@ -12,8 +12,9 @@ export default async function LocaleLayout({
 
   return (
     <>
-      <Navbar locale={locale} />
-      <main className="pb-20 md:pb-0 md:pt-20">{children}</main>
+      <Preloader />
+        <Navbar locale={locale} />
+        <main className="flex flex-col min-h-dvh pb-20 md:min-h-0 md:block md:pb-0 md:pt-20">{children}</main>
     </>
   );
 }

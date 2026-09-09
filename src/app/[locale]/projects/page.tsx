@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion, Variants, useMotionTemplate, useMotionValue } from "framer-motion";
 import { getDictionary, Locale } from "@/lib/i18n/dictionaries";
 import Tag from "@/components/ui/Tag";
+import { supabase } from "@/lib/supabase/client"; // Import koneksi Supabase
 
 // --- KOMPONEN EFEK TYPEWRITER HALUS ---
 const TypewriterText = ({ text, speed = 0.03, className = "" }: { text: string, speed?: number, className?: string }) => {
@@ -38,7 +39,6 @@ const TypewriterText = ({ text, speed = 0.03, className = "" }: { text: string, 
 const ProjectCard = ({ project, locale }: { project: any, locale: Locale }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   
-  // State untuk melacak kursor (Glowing Border)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -63,16 +63,11 @@ const ProjectCard = ({ project, locale }: { project: any, locale: Locale }) => {
 
   return (
     <Link href={`/${locale}/projects/${project.id}`} className="group block h-full">
-      {/* 
-        layoutId untuk Opsi 1 (Shared Layout Morph). 
-        Ini akan meleburkan kartu menjadi background detail page
-      */}
       <motion.div 
         layoutId={`project-container-${project.id}`}
         onMouseMove={handleMouseMove}
         className="relative flex flex-col h-full bg-background/50 border border-borderLight rounded-xl overflow-hidden transition-colors duration-500 backdrop-blur-sm z-10"
       >
-        {/* Opsi 3: Magic Glowing Border - Muncul saat di-hover dan mengikuti kursor */}
         <motion.div
           className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100 z-20"
           style={{
@@ -86,7 +81,6 @@ const ProjectCard = ({ project, locale }: { project: any, locale: Locale }) => {
           }}
         />
         
-        {/* Slideshow Container (Dengan layoutId terpisah untuk gambar) */}
         <motion.div 
           layoutId={`project-image-${project.id}`}
           className="relative aspect-video w-full overflow-hidden bg-borderLight/30 z-10"
@@ -111,7 +105,6 @@ const ProjectCard = ({ project, locale }: { project: any, locale: Locale }) => {
           </AnimatePresence>
         </motion.div>
 
-        {/* Content Container */}
         <div className="p-6 flex flex-col flex-grow z-10">
           <motion.h2 
             layoutId={`project-title-${project.id}`}
@@ -119,7 +112,7 @@ const ProjectCard = ({ project, locale }: { project: any, locale: Locale }) => {
           >
             {project.title}
           </motion.h2>
-          <p className="text-sm text-textPrimary/70 leading-relaxed mb-6 flex-grow">
+          <p className="text-sm text-textPrimary/70 leading-relaxed mb-6 flex-grow line-clamp-3">
             {project.description}
           </p>
           
@@ -140,13 +133,40 @@ export default function Projects({ params }: { params: Promise<{ locale: Locale 
   const dict = getDictionary(locale);
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [projects, setProjects] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Efek Senter Latar Belakang
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener("mousemove", updateMousePosition);
     return () => window.removeEventListener("mousemove", updateMousePosition);
+  }, []);
+
+  // Mengambil Data dari Supabase
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("projects")
+          .select("*")
+          .order("created_at", { ascending: true }); // Mengurutkan berdasarkan waktu pembuatan
+
+        if (error) throw error;
+        
+        if (data) {
+          setProjects(data);
+        }
+      } catch (error) {
+        console.error("Error fetching projects from Supabase:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProjects();
   }, []);
 
   const container: Variants = {
@@ -170,10 +190,10 @@ export default function Projects({ params }: { params: Promise<{ locale: Locale 
       
       {!shouldReduceMotion && (
         <div 
-          className="fixed inset-0 z-[-1] bg-[radial-gradient(#3B4A3F_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-0 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none"
+          className="fixed inset-0 z-[-1] bg-[radial-gradient(#3B4A3F_2px,transparent_2px)] [background-size:24px_24px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
           style={{
-            WebkitMaskImage: `radial-gradient(circle 300px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent)`,
-            maskImage: `radial-gradient(circle 300px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent)`
+            WebkitMaskImage: `radial-gradient(circle 450px at ${mousePosition.x}px ${mousePosition.y}px, black 15%, transparent 80%)`,
+            maskImage: `radial-gradient(circle 450px at ${mousePosition.x}px ${mousePosition.y}px, black 15%, transparent 80%)`
           }}
         />
       )}
@@ -181,13 +201,11 @@ export default function Projects({ params }: { params: Promise<{ locale: Locale 
       <div className="w-full max-w-[1200px] mx-auto relative z-10">
         
         <div className="max-w-2xl mb-12 min-h-[120px]">
-          {/* Teks muncul seperti diketik secara halus */}
           <TypewriterText 
             text={dict.projects.title} 
             speed={0.06}
             className="text-3xl md:text-4xl font-semibold mb-4" 
           />
-          {/* Deskripsi diketik lebih cepat agar tidak menunggu lama */}
           <TypewriterText 
             text={dict.projects.subtitle} 
             speed={0.015}
@@ -195,18 +213,27 @@ export default function Projects({ params }: { params: Promise<{ locale: Locale 
           />
         </div>
 
-        <motion.div 
-          variants={container}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10"
-        >
-          {dict.projects.items.map((project: any) => (
-            <motion.div key={project.id} variants={itemVariant}>
-              <ProjectCard project={project} locale={locale} />
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* LOGIKA LOADING & MENAMPILKAN DATA */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+            {[1, 2, 3, 4].map((skeleton) => (
+              <div key={skeleton} className="aspect-video w-full rounded-xl bg-textPrimary/5 animate-pulse border border-borderLight/50" />
+            ))}
+          </div>
+        ) : (
+          <motion.div 
+            variants={container}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10"
+          >
+            {projects.map((project: any) => (
+              <motion.div key={project.id} variants={itemVariant}>
+                <ProjectCard project={project} locale={locale} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
 
       </div>
     </main>

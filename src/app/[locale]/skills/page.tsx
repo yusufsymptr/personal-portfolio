@@ -1,114 +1,16 @@
 "use client";
 
 import { use, useState, useEffect } from "react";
-import { motion, useReducedMotion, Variants, animate } from "framer-motion";
-import { getDictionary, Locale } from "@/lib/i18n/dictionaries";
-
-// --- KOMPONEN TYPEWRITER (Dioptimasi) ---
-const TypewriterText = ({ text, speed = 0.03, className = "", showCursor = false }: { text: string, speed?: number, className?: string, showCursor?: boolean }) => {
-  const characters = Array.from(text);
-  return (
-    <motion.div 
-      initial="hidden" animate="visible" 
-      variants={{ visible: { transition: { staggerChildren: speed } } }}
-      className={className}
-    >
-      {characters.map((char, index) => (
-        <motion.span key={index} variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="inline-block">
-          {char === " " ? "\u00A0" : char}
-        </motion.span>
-      ))}
-      {showCursor && (
-        <motion.span
-          animate={{ opacity: [1, 0] }}
-          transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
-          className="inline-block w-[0.4em] h-[0.9em] bg-accent ml-1.5 align-baseline translate-y-[2px]"
-        />
-      )}
-    </motion.div>
-  );
-};
-
-// --- KOMPONEN PROGRESS BAR INTERAKTIF (Dioptimasi GPU) ---
-const SkillProgressBar = ({ skill, index, dict }: { skill: any, index: number, dict: any }) => {
-  const [count, setCount] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-  const shouldReduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    const delay = index * 0.4;
-    
-    if (shouldReduceMotion) {
-      setCount(skill.percentage);
-      setIsComplete(true);
-      return;
-    }
-
-    const controls = animate(0, skill.percentage, {
-      duration: 2.5, 
-      delay: delay,
-      ease: "easeOut",
-      onUpdate: (value) => setCount(Math.round(value)),
-      onComplete: () => setIsComplete(true),
-    });
-
-    return () => controls.stop();
-  }, [skill.percentage, index, shouldReduceMotion]);
-
-  return (
-    <div className="group bg-background/40 border border-borderLight rounded-xl p-6 md:p-8 relative overflow-hidden backdrop-blur-sm hover:border-accent/40 transition-colors duration-500 shadow-sm hover:shadow-lg">
-      
-      {/* Efek Holographic disembunyikan di HP (md:block) untuk menghemat memori */}
-      <div className="hidden md:block absolute inset-0 bg-[linear-gradient(rgba(59,74,63,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(59,74,63,0.04)_1px,transparent_1px)] [background-size:20px_20px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 relative z-10">
-        <div>
-          <h3 className="text-xl md:text-2xl font-semibold text-textPrimary tracking-tight group-hover:text-accent transition-colors duration-300">
-            {skill.name}
-          </h3>
-          <p className="text-sm text-textPrimary/60 mt-2 max-w-lg leading-relaxed">
-            {skill.description}
-          </p>
-        </div>
-        
-        <div className="mt-5 md:mt-0 flex flex-col items-start md:items-end font-mono">
-          <span className={`text-[10px] md:text-xs tracking-[0.2em] uppercase font-bold mb-1 ${isComplete ? 'text-accent' : 'text-accent/60 animate-pulse'}`}>
-            {isComplete ? dict.skills.statusComplete : dict.skills.statusLoading}
-          </span>
-          <span className="text-4xl md:text-5xl font-light text-textPrimary tracking-tighter">
-            {count}<span className="text-2xl text-textPrimary/40 ml-1">%</span>
-          </span>
-        </div>
-      </div>
-
-      <div className="w-full h-3 bg-borderLight/40 rounded-full overflow-hidden relative z-10 shadow-inner translate-z-0">
-        <motion.div 
-          className="absolute top-0 left-0 h-full bg-accent flex justify-end items-center origin-left"
-          // PERBAIKAN: Menggunakan width memicu CPU, tapi dalam konteks progress bar ini masih bisa ditoleransi karena hanya 4 elemen. translate-z-0 memaksa GPU rendering.
-          initial={{ width: "0%" }}
-          animate={{ width: `${skill.percentage}%` }}
-          transition={{ duration: 2.5, delay: index * 0.4, ease: "easeOut" }}
-          style={{ willChange: "width" }}
-        >
-          <div className="w-3 h-3 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.9)] mr-px" />
-        </motion.div>
-      </div>
-    </div>
-  );
-};
+import { motion, useReducedMotion } from "framer-motion";
+import { Locale } from "@/lib/i18n/dictionaries";
 
 export default function Skills({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = use(params);
+  
   const shouldReduceMotion = useReducedMotion();
-  const dict = getDictionary(locale);
-
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Mengecek apakah perangkat memiliki kursor (bukan layar sentuh murni)
-    const hasPointer = window.matchMedia("(pointer: fine)").matches;
-    if (!hasPointer) return;
-
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -116,72 +18,235 @@ export default function Skills({ params }: { params: Promise<{ locale: Locale }>
     return () => window.removeEventListener("mousemove", updateMousePosition);
   }, []);
 
-  const container: Variants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: shouldReduceMotion ? 0 : 0.15 } }
+  const translations = {
+    en: {
+      map: "CAPABILITY MAP",
+      title: "Skills, kept practical.",
+      subtitle: "I build the technical product first, ensuring solid logic and architecture, then support it with clear design, planning, and documentation.",
+      fullstack: "Full-stack Web Development",
+      fullstackDesc: "Websites, dashboards, admin systems, and modern interactive UI.",
+      backend: "Backend, API & Database",
+      backendDesc: "Server logic, relational storage, and APIs.",
+      ml: "Machine Learning & AI",
+      mlDesc: "Data patterns, models, and AI workflow.",
+      mobile: "Mobile Utilities",
+      mobileDesc: "Mobile-facing apps and cross-platform UI.",
+      delivery: "Project Delivery & Architecture",
+      deliveryDesc: "System planning, visual design, and operational docs.",
+      archPlan: "Architecture & Planning",
+      visual: "Visual & Design"
+    },
+    id: {
+      map: "PETA KAPABILITAS",
+      title: "Keahlian Praktis & Terukur.",
+      subtitle: "Saya membangun fondasi teknis terlebih dahulu, memastikan logika yang solid, lalu mendukungnya dengan desain, perencanaan, dan dokumentasi yang jelas.",
+      fullstack: "Pengembangan Web Full-stack",
+      fullstackDesc: "Situs web, dasbor, sistem admin, dan UI interaktif modern.",
+      backend: "Backend, API & Basis Data",
+      backendDesc: "Logika server, penyimpanan relasional, dan API.",
+      ml: "Machine Learning & AI",
+      mlDesc: "Pola data, pemodelan, dan alur kerja kecerdasan buatan.",
+      mobile: "Utilitas Mobile",
+      mobileDesc: "Aplikasi seluler dan antarmuka lintas platform.",
+      delivery: "Pengiriman Proyek & Arsitektur",
+      deliveryDesc: "Perencanaan sistem, desain visual, dan dokumen operasional.",
+      archPlan: "Arsitektur & Perencanaan",
+      visual: "Visual & Desain"
+    }
   };
 
-  const itemVariant: Variants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
-  };
+  const t = translations[locale as keyof typeof translations] || translations.en;
+
+  const webTools1 = ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Next.js"];
+  const webTools2 = ["Laravel", "PHP", "Tailwind CSS", "Bootstrap", "Framer Motion"];
 
   return (
-    <main className="relative min-h-screen pt-24 pb-24 px-6 md:px-8 overflow-hidden group">
+    <div className="relative min-h-screen group">
       
-      <div className="fixed inset-0 z-[-3] bg-[radial-gradient(#E4E2DD_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80 pointer-events-none" />
+      {/* BACKGROUND DASAR (Redup) */}
+      <div className="fixed inset-0 z-[-2] bg-[radial-gradient(#E4E2DD_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80 pointer-events-none" />
       
-      {/* PERBAIKAN CRT SCANNER: Menggunakan 'y' (Transform GPU) alih-alih 'top' (Layout CPU) */}
-      {!shouldReduceMotion && (
-        <motion.div
-          initial={{ y: "-20vh" }}
-          animate={{ y: "120vh" }}
-          transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
-          className="fixed left-0 right-0 h-40 bg-gradient-to-b from-transparent via-accent/5 to-transparent z-[-2] pointer-events-none will-change-transform"
-        />
-      )}
-
-      {/* PERBAIKAN SPOTLIGHT: Disembunyikan sepenuhnya di layar HP (hidden md:block) */}
+      {/* EFEK SENTER (Ditingkatkan Kekuatannya!) */}
       {!shouldReduceMotion && (
         <div 
-          className="hidden md:block fixed inset-0 z-[-1] bg-[radial-gradient(#3B4A3F_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-0 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none will-change-transform"
+          // 1. group-hover:opacity-40 diubah jadi group-hover:opacity-100 (Lebih Terang!)
+          // 2. Ketebalan titik senter dinaikkan dari 1.5px ke 2px agar lebih tebal saat disorot
+          className="fixed inset-0 z-[-1] bg-[radial-gradient(#3B4A3F_2px,transparent_2px)] [background-size:24px_24px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
           style={{
-            WebkitMaskImage: `radial-gradient(circle 350px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent)`,
-            maskImage: `radial-gradient(circle 350px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent)`
+            // 3. Radius cahaya dinaikkan ke 450px dan pusat hitamnya (black 15%) dibuat lebih padat
+            WebkitMaskImage: `radial-gradient(circle 450px at ${mousePosition.x}px ${mousePosition.y}px, black 15%, transparent 80%)`,
+            maskImage: `radial-gradient(circle 450px at ${mousePosition.x}px ${mousePosition.y}px, black 15%, transparent 80%)`
           }}
         />
       )}
 
-      <div className="w-full max-w-[900px] mx-auto relative z-10">
+      {/* KONTEN UTAMA */}
+      <div className="pt-24 pb-20 px-6 md:px-8 max-w-[1200px] mx-auto relative z-10">
         
-        <div className="mb-14 min-h-[120px]">
-          <TypewriterText 
-            text={dict.skills.title} 
-            speed={0.06} 
-            showCursor={true} 
-            className="text-4xl md:text-5xl font-semibold mb-4 tracking-tight" 
-          />
-          <TypewriterText 
-            text={dict.skills.subtitle} 
-            speed={0.015} 
-            className="text-base md:text-lg text-textPrimary/70 leading-relaxed max-w-2xl" 
-          />
-        </div>
-
+        {/* HEADER HALAMAN */}
         <motion.div 
-          variants={container} 
-          initial="hidden" 
-          animate="visible" 
-          className="flex flex-col gap-6 md:gap-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-12"
         >
-          {dict.skills.items.map((skill: any, index: number) => (
-            <motion.div key={index} variants={itemVariant} className="transform-gpu">
-              <SkillProgressBar skill={skill} index={index} dict={dict} />
-            </motion.div>
-          ))}
+          <div className="flex items-center gap-3 mb-4">
+            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-accent">
+              {t.map}
+            </span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-textPrimary mb-4">
+            {t.title}
+          </h1>
+          <p className="text-textPrimary/70 max-w-2xl text-base md:text-lg leading-relaxed font-medium">
+            {t.subtitle}
+          </p>
         </motion.div>
 
+        {/* BENTO GRID KREATIF */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-5"
+        >
+          
+          {/* 1. FULL-STACK WEB DEVELOPMENT */}
+          <div className="md:col-span-3 py-8 rounded-2xl border border-borderLight bg-background hover:bg-accent overflow-hidden relative group/card transition-colors duration-500 cursor-default shadow-sm">
+            <div className="px-8 mb-6 relative z-10">
+              <h3 className="text-xl md:text-2xl font-bold text-textPrimary group-hover/card:text-background transition-colors duration-500 mb-2">
+                {t.fullstack}
+              </h3>
+              <p className="text-sm text-textPrimary/60 group-hover/card:text-background/80 transition-colors duration-500">
+                {t.fullstackDesc}
+              </p>
+            </div>
+            
+            <div className="relative flex flex-col gap-4 w-full">
+              <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-background group-hover/card:from-accent to-transparent z-10 transition-colors duration-500" />
+              <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-background group-hover/card:from-accent to-transparent z-10 transition-colors duration-500" />
+              
+              <motion.div animate={{ x: ["0%", "-50%"] }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }} className="flex whitespace-nowrap w-max">
+                {[...webTools1, ...webTools1, ...webTools1].map((tool, i) => (
+                  <span key={i} className="mx-3 px-5 py-2 rounded-full border border-borderLight group-hover/card:border-background/30 bg-background group-hover/card:bg-background/10 text-sm font-bold tracking-wide text-textPrimary/80 group-hover/card:text-background transition-colors duration-500 shadow-sm group-hover/card:shadow-none">
+                    {tool}
+                  </span>
+                ))}
+              </motion.div>
+
+              <motion.div animate={{ x: ["-50%", "0%"] }} transition={{ duration: 28, repeat: Infinity, ease: "linear" }} className="flex whitespace-nowrap w-max">
+                {[...webTools2, ...webTools2, ...webTools2].map((tool, i) => (
+                  <span key={i} className="mx-3 px-5 py-2 rounded-full border border-accent/30 group-hover/card:border-background/30 bg-accent/5 group-hover/card:bg-background/20 text-sm font-bold tracking-wide text-textPrimary/90 group-hover/card:text-background transition-colors duration-500 shadow-sm group-hover/card:shadow-none">
+                    {tool}
+                  </span>
+                ))}
+              </motion.div>
+            </div>
+          </div>
+
+          {/* 2. BACKEND, API & DATABASE */}
+          <div className="md:col-span-1 p-6 md:p-8 rounded-2xl bg-background hover:bg-accent border border-borderLight transition-all duration-500 relative overflow-hidden group/card flex flex-col justify-between cursor-default shadow-sm">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/0 group-hover/card:bg-background/10 blur-[50px] rounded-full transition-colors duration-700"></div>
+            
+            <div className="relative z-10">
+              <h3 className="text-lg md:text-xl font-bold mb-2 text-textPrimary group-hover/card:text-background transition-colors duration-500">
+                {t.backend}
+              </h3>
+              <p className="text-xs text-textPrimary/60 group-hover/card:text-background/80 transition-colors duration-500 mb-6">
+                {t.backendDesc}
+              </p>
+              
+              <div className="flex flex-wrap gap-2">
+                {["Java", "Node.js", "Express", "Supabase", "PostgreSQL", "MySQL", "Prisma", "RESTful API"].map((tech) => (
+                  <span key={tech} className="px-3 py-1.5 text-xs font-bold text-textPrimary group-hover/card:text-background bg-background group-hover/card:bg-background/10 rounded border border-borderLight group-hover/card:border-background/30 transition-colors duration-500 shadow-sm group-hover/card:shadow-none">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 3. MACHINE LEARNING & AI */}
+          <div className="md:col-span-1 p-6 md:p-8 rounded-2xl bg-background hover:bg-accent border border-borderLight transition-all duration-500 flex flex-col justify-between group/card cursor-default shadow-sm">
+            <div className="relative z-10">
+              <h3 className="text-lg md:text-xl font-bold text-textPrimary group-hover/card:text-background transition-colors duration-500 mb-2">
+                {t.ml}
+              </h3>
+              <p className="text-xs text-textPrimary/60 group-hover/card:text-background/80 transition-colors duration-500 mb-6">
+                {t.mlDesc}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {["Python", "TensorFlow", "Scikit-Learn", "Pandas", "Jupyter", "OpenAI API"].map((ml) => (
+                  <span key={ml} className="px-3 py-1.5 text-xs font-bold text-textPrimary group-hover/card:text-background bg-background group-hover/card:bg-background/10 rounded border border-borderLight group-hover/card:border-background/30 transition-colors duration-500 shadow-sm group-hover/card:shadow-none">
+                    {ml}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 4. MOBILE DEVELOPMENT */}
+          <div className="md:col-span-1 p-6 md:p-8 rounded-2xl bg-background hover:bg-accent border border-borderLight transition-all duration-500 flex flex-col justify-between group/card cursor-default shadow-sm">
+            <div className="relative z-10">
+              <h3 className="text-lg md:text-xl font-bold text-textPrimary group-hover/card:text-background transition-colors duration-500 mb-2">
+                {t.mobile}
+              </h3>
+              <p className="text-xs text-textPrimary/60 group-hover/card:text-background/80 transition-colors duration-500 mb-6">
+                {t.mobileDesc}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {["React Native", "Flutter", "Dart", "Expo", "Kotlin"].map((mob) => (
+                  <span key={mob} className="px-3 py-1.5 text-xs font-bold text-textPrimary group-hover/card:text-background bg-background group-hover/card:bg-background/10 rounded border border-borderLight group-hover/card:border-background/30 transition-colors duration-500 shadow-sm group-hover/card:shadow-none">
+                    {mob}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 5. PROJECT DELIVERY */}
+          <div className="md:col-span-3 p-6 md:p-8 rounded-2xl bg-background hover:bg-accent border border-borderLight transition-all duration-500 group/card cursor-default shadow-sm">
+            <div className="mb-6 relative z-10">
+              <h3 className="text-xl md:text-2xl font-bold text-textPrimary group-hover/card:text-background transition-colors duration-500 mb-2">
+                {t.delivery}
+              </h3>
+              <p className="text-sm text-textPrimary/60 group-hover/card:text-background/80 transition-colors duration-500">
+                {t.deliveryDesc}
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-textPrimary/50 group-hover/card:text-background/60 mb-3 border-b border-borderLight group-hover/card:border-background/30 transition-colors duration-500 pb-2">
+                  {t.archPlan}
+                </h4>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {["Mermaid.js", "Draw.io", "Microsoft Project", "Jira", "Notion"].map((item) => (
+                    <span key={item} className="px-3 py-1.5 border border-borderLight group-hover/card:border-background/30 text-xs font-bold text-textPrimary group-hover/card:text-background bg-transparent group-hover/card:bg-background/10 transition-colors duration-500">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-textPrimary/50 group-hover/card:text-background/60 mb-3 border-b border-borderLight group-hover/card:border-background/30 transition-colors duration-500 pb-2">
+                  {t.visual}
+                </h4>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {["Figma", "Canva", "UI/UX Layout", "Adobe Illustrator"].map((item) => (
+                    <span key={item} className="px-3 py-1.5 border border-borderLight group-hover/card:border-background/30 text-xs font-bold text-textPrimary group-hover/card:text-background bg-transparent group-hover/card:bg-background/10 transition-colors duration-500">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </motion.div>
       </div>
-    </main>
+    </div>
   );
 }
