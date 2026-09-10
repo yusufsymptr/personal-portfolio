@@ -6,7 +6,6 @@ import { motion, useReducedMotion, Variants } from "framer-motion";
 import Button from "@/components/ui/Button";
 import { getDictionary, Locale } from "@/lib/i18n/dictionaries";
 
-// Teks link dihapus, diganti dengan deretan Ikon SVG murni yang elegan
 const socialIcons = [
   {
     name: "LinkedIn",
@@ -96,7 +95,8 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
       <section 
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="relative flex flex-1 flex-col justify-center pt-32 pb-20 px-6 md:px-8 overflow-hidden group md:flex-none"
+        // PERUBAHAN UTAMA: flex-1 dihapus, pt dan pb dibuat responsif
+        className="relative flex flex-col justify-center pt-20 md:pt-32 pb-12 md:pb-20 px-6 md:px-8 overflow-hidden group"
       >
         {/* Background Dasar Redup */}
         <div className="absolute inset-0 z-[-2] bg-[radial-gradient(#E4E2DD_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80 pointer-events-none" />
