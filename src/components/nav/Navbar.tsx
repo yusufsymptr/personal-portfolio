@@ -93,14 +93,15 @@ export default function Navbar({ locale }: { locale: string }) {
           VERSI MOBILE (Navbar Solid di Dasar Bawah, Tidak Ngambang)
           ========================================= */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-borderLight pb-safe">
-        <div className="flex items-center justify-between px-1 py-2 w-full">
+        <div className="flex items-center justify-between w-full">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.label}
                 href={link.href}
-                className={`flex-1 text-center py-2 text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                // PERUBAHAN: py-2 diganti py-4 untuk area klik yang lebih luas, text-[10px] diganti text-xs
+                className={`flex-1 text-center py-4 text-xs font-bold uppercase tracking-wider transition-colors ${
                   isActive ? "text-accent" : "text-textPrimary/60"
                 }`}
               >

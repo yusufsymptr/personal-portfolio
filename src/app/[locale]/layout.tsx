@@ -56,7 +56,7 @@ export default async function LocaleLayout({
     <>
       <Preloader />
         <Navbar locale={locale} />
-        <main className="flex flex-col min-h-dvh pb-20 md:min-h-0 md:block md:pb-0 md:pt-20">{children}</main>
+        <main className="relative flex flex-1 flex-col justify-center pt-20 md:pt-32 pb-12 md:pb-20 px-6 md:px-8 overflow-hidden group md:flex-none">{children}</main>
     </>
   );
 }
