@@ -91,12 +91,12 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
   };
 
   return (
-    <>
+    <div className="flex flex-col flex-1 w-full min-h-[85vh] lg:min-h-[auto]">
       <section 
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        // PERUBAHAN UTAMA: flex-1 dihapus, pt dan pb dibuat responsif
-        className="relative flex flex-col justify-center pt-20 md:pt-32 pb-12 md:pb-20 px-6 md:px-8 overflow-hidden group"
+        // KITA KEMBALIKAN flex-1 AGAR HERO MEMANJANG OTOMATIS MEMAKAN SISA LAYAR KOSONG
+        className="relative flex flex-1 flex-col justify-center pt-24 md:pt-32 pb-16 md:pb-20 px-6 md:px-8 overflow-hidden group"
       >
         {/* Background Dasar Redup */}
         <div className="absolute inset-0 z-[-2] bg-[radial-gradient(#E4E2DD_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80 pointer-events-none" />
@@ -196,7 +196,8 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
       </section>
 
       {/* MARQUEE */}
-      <section className="relative flex shrink-0 overflow-x-hidden bg-accent text-background py-4 md:py-5 border-y border-borderLight">
+      {/* JURUS PAMUNGKAS: mt-auto memaksa Marquee turun ke paling bawah kontainer */}
+      <section className="relative flex shrink-0 overflow-x-hidden bg-accent text-background py-4 md:py-5 border-y border-borderLight mt-auto">
         <motion.div
           animate={shouldReduceMotion ? {} : { x: ["0%", "-50%"] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
@@ -212,6 +213,6 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
           ))}
         </motion.div>
       </section>
-    </>
+    </div>
   );
 }
