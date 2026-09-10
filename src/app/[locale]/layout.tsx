@@ -7,6 +7,9 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Yusuf Syam Putra | Software Engineer & UI/UX Designer",
   description: "Portofolio profesional Yusuf Syam Putra, mahasiswa Teknik Informatika di Politeknik Caltex Riau. Berpengalaman dalam pengembangan Full-stack (Next.js, Laravel), UI/UX (Figma), dan arsitektur data.",
+  verification: {
+    google: 'google5e3774eeb27bc81f',
+  },
   keywords: [
     "Yusuf Syam Putra", 
     "Yusuf Syam", 
@@ -21,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Yusuf Syam Putra | Tech Portfolio",
     description: "Jelajahi proyek web, animasi 3D, dan arsitektur jaringan hasil karya Yusuf Syam Putra.",
-    url: "https://portofolio-yusuf.vercel.app", // Ganti dengan URL Vercel Anda nanti saat sudah deploy
+    url: "https://yusufsyamputra.vercel.app", // Ganti dengan URL Vercel Anda nanti saat sudah deploy
     siteName: "Yusuf Syam Putra Portfolio",
     locale: "id_ID",
     type: "website",
