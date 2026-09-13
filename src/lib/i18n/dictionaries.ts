@@ -117,7 +117,7 @@ const dictionaries = {
     },
     contact: {
       title: "Get in Touch",
-      subtitle: "Have a project in mind, a question, or just want to say hi? Fill out the form below or reach out directly.",
+      subtitle: "Have a project in mind, a question, or want to say hi? Fill out the form below or reach out directly.",
       directInfo: "Contact Information",
       availability: "Availability",
       availabilityValue: "Open for Opportunities (Remote)",
@@ -248,7 +248,7 @@ const dictionaries = {
     },
     contact: {
       title: "Hubungi Saya",
-      subtitle: "Ada ide proyek, pertanyaan, atau sekadar ingin menyapa? Silakan isi formulir di bawah atau hubungi saya langsung.",
+      subtitle: "Ada ide proyek, pertanyaan, atau ingin menyapa? Silakan isi formulir di bawah atau hubungi saya langsung.",
       directInfo: "Informasi Kontak",
       availability: "Ketersediaan",
       availabilityValue: "Terbuka untuk Peluang (Remote)",

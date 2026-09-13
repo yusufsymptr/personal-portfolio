@@ -58,8 +58,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
   return (
     <div key={pathname}>
       {/* LAPISAN 2: Warna Gelap (Bayangan) */}
+      {/* LAPISAN 2: Warna Gelap (Bayangan) */}
       <motion.div
-        className="fixed inset-0 z-[100] bg-textPrimary pointer-events-none"
+        className="fixed inset-0 z-[100] bg-textPrimary pointer-events-none will-change-transform"
         initial={{ x: "0%" }}
         animate={{ x: "-100%" }}
         transition={{ duration: 0.9, delay: 0.65, ease: [0.76, 0, 0.24, 1] }}
@@ -67,7 +68,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
       {/* LAPISAN 1: Warna Hijau Utama */}
       <motion.div
-        className="fixed inset-0 z-[101] flex items-center justify-center bg-accent pointer-events-none"
+        className="fixed inset-0 z-[101] flex items-center justify-center bg-accent pointer-events-none will-change-transform"
         initial={{ x: "0%" }}
         animate={{ x: "-100%" }}
         transition={{ duration: 0.9, delay: 0.5, ease: [0.76, 0, 0.24, 1] }}

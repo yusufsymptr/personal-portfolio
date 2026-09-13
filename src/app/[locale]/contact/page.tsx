@@ -4,19 +4,30 @@ import { use, useState, useEffect } from "react";
 import { motion, useReducedMotion, Variants } from "framer-motion";
 import { getDictionary, Locale } from "@/lib/i18n/dictionaries";
 
-// Efek Typewriter
+// Efek Typewriter (Diperbarui agar memecah per kata sehingga teks tidak patah di tengah kata pada layar HP)
 const TypewriterText = ({ text, speed = 0.03, className = "" }: { text: string, speed?: number, className?: string }) => {
-  const characters = Array.from(text);
+  const words = text.split(" ");
+  
   return (
     <motion.div 
       initial="hidden" animate="visible" 
       variants={{ visible: { transition: { staggerChildren: speed } } }}
       className={className}
     >
-      {characters.map((char, index) => (
-        <motion.span key={index} variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} className="inline-block">
-          {char === " " ? "\u00A0" : char}
-        </motion.span>
+      {words.map((word, wordIndex) => (
+        <span key={wordIndex} className="inline-block whitespace-nowrap">
+          {Array.from(word).map((char, charIndex) => (
+            <motion.span 
+              key={charIndex} 
+              variants={{ hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } }} 
+              className="inline-block"
+            >
+              {char}
+            </motion.span>
+          ))}
+          {/* Tambahkan spasi setelah setiap kata, kecuali kata terakhir */}
+          {wordIndex !== words.length - 1 && <span>&nbsp;</span>}
+        </span>
       ))}
     </motion.div>
   );
@@ -82,7 +93,6 @@ export default function Contact({ params }: { params: Promise<{ locale: Locale }
     }
   };
 
-  // Data Sosial Media dengan Ikon agar jauh lebih elegan
   const socialLinks = [
     {
       name: "Email",
@@ -113,10 +123,8 @@ export default function Contact({ params }: { params: Promise<{ locale: Locale }
   return (
     <main className="relative min-h-screen pt-24 pb-24 px-6 md:px-8 group">
       
-      {/* Background Redup Asli */}
       <div className="fixed inset-0 z-[-3] bg-[radial-gradient(#E4E2DD_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80 pointer-events-none" />
       
-      {/* EFEK SENTER DIPERKUAT (Terang 100%, Titik 2px, Radius 450px) */}
       {!shouldReduceMotion && (
         <div 
           className="hidden md:block fixed inset-0 z-[-1] bg-[radial-gradient(#3B4A3F_2px,transparent_2px)] [background-size:24px_24px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none will-change-transform"
@@ -133,12 +141,12 @@ export default function Contact({ params }: { params: Promise<{ locale: Locale }
           <TypewriterText 
             text={dict.contact.title} 
             speed={0.05} 
-            className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 tracking-tighter" 
+            className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 tracking-tighter text-pretty" 
           />
           <TypewriterText 
             text={dict.contact.subtitle} 
             speed={0.015} 
-            className="text-base md:text-lg text-textPrimary/70 leading-relaxed font-medium" 
+            className="text-base md:text-lg text-textPrimary/70 leading-relaxed font-medium text-pretty break-words" 
           />
         </div>
 
@@ -151,7 +159,6 @@ export default function Contact({ params }: { params: Promise<{ locale: Locale }
           {/* KOLOM KIRI: STATUS DASHBOARD & SOCIALS */}
           <motion.div variants={itemVariant} className="flex-1 space-y-6">
             
-            {/* Kartu Status Availability */}
             <div className="p-6 rounded-2xl bg-background border border-borderLight shadow-sm flex items-start gap-4 hover:border-accent/30 transition-colors duration-300">
               <div className="mt-1 relative flex h-4 w-4">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-50"></span>
@@ -170,7 +177,6 @@ export default function Contact({ params }: { params: Promise<{ locale: Locale }
               </div>
             </div>
 
-            {/* Kartu Sosial Media */}
             <div className="p-6 rounded-2xl bg-background border border-borderLight shadow-sm">
               <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-textPrimary/50 mb-6 border-b border-borderLight pb-3">
                 {dict.contact.socials} / Direct Links

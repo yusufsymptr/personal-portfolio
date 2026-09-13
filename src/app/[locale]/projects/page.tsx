@@ -6,17 +6,18 @@ import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion, Variants, useMotionTemplate, useMotionValue } from "framer-motion";
 import { getDictionary, Locale } from "@/lib/i18n/dictionaries";
 import Tag from "@/components/ui/Tag";
-import { supabase } from "@/lib/supabase/client"; // Import koneksi Supabase
+import { supabase } from "@/lib/supabase/client";
 
 // --- KOMPONEN EFEK TYPEWRITER HALUS ---
-const TypewriterText = ({ text, speed = 0.03, className = "" }: { text: string, speed?: number, className?: string }) => {
+// Ditambahkan parameter 'delay' agar efek mengetik menunggu tirai hijau selesai (0.8 detik)
+const TypewriterText = ({ text, speed = 0.03, delay = 0.8, className = "" }: { text: string, speed?: number, delay?: number, className?: string }) => {
   const characters = Array.from(text);
   return (
     <motion.div 
       initial="hidden" 
       animate="visible" 
       variants={{
-        visible: { transition: { staggerChildren: speed } }
+        visible: { transition: { delayChildren: delay, staggerChildren: speed } }
       }}
       className={className}
     >
@@ -136,7 +137,6 @@ export default function Projects({ params }: { params: Promise<{ locale: Locale 
   const [projects, setProjects] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Efek Senter Latar Belakang
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -145,14 +145,13 @@ export default function Projects({ params }: { params: Promise<{ locale: Locale 
     return () => window.removeEventListener("mousemove", updateMousePosition);
   }, []);
 
-  // Mengambil Data dari Supabase
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const { data, error } = await supabase
           .from("projects")
           .select("*")
-          .order("created_at", { ascending: true }); // Mengurutkan berdasarkan waktu pembuatan
+          .order("created_at", { ascending: true });
 
         if (error) throw error;
         
@@ -169,9 +168,10 @@ export default function Projects({ params }: { params: Promise<{ locale: Locale 
     fetchProjects();
   }, []);
 
+  // Menambahkan delayChildren: 0.8 agar rendering kartu menunggu animasi halaman selesai
   const container: Variants = {
     hidden: {},
-    visible: { transition: { staggerChildren: shouldReduceMotion ? 0 : 0.15 } }
+    visible: { transition: { delayChildren: 0.8, staggerChildren: shouldReduceMotion ? 0 : 0.15 } }
   };
 
   const itemVariant: Variants = {
@@ -204,11 +204,13 @@ export default function Projects({ params }: { params: Promise<{ locale: Locale 
           <TypewriterText 
             text={dict.projects.title} 
             speed={0.06}
+            delay={0.8}
             className="text-3xl md:text-4xl font-semibold mb-4" 
           />
           <TypewriterText 
             text={dict.projects.subtitle} 
             speed={0.015}
+            delay={1.2}
             className="text-base md:text-lg text-textPrimary/70 leading-relaxed inline-block" 
           />
         </div>
