@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Yusuf Syam Putra | Software Engineer & UI/UX Designer",
   description: "Portofolio profesional Yusuf Syam Putra, mahasiswa Teknik Informatika di Politeknik Caltex Riau. Berpengalaman dalam pengembangan Full-stack (Next.js, Laravel), UI/UX (Figma), dan arsitektur data.",
   verification: {
-    google: 'gPTwolPN2DIEg6IVrdELcHUHgGT5gaR1QHjQMi0iLW8U',
+    google: 'PTwolPN2DIEg6IVrdELcHUHgGT5gaR1QHjQMi0iLW8U',
   },
   keywords: [
     "Yusuf Syam Putra", 
