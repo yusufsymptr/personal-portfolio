@@ -17,11 +17,11 @@ export default function Navbar({ locale }: { locale: string }) {
   }, []);
 
   const navLinks = [
-    { label: dict.nav.home, href: `/${locale}` },
-    { label: dict.nav.about, href: `/${locale}/about` },
-    { label: dict.nav.projects, href: `/${locale}/projects` },
-    { label: dict.nav.skills, href: `/${locale}/skills` },
-    { label: dict.nav.contact, href: `/${locale}/contact` },
+    { key: "home" as const, label: dict.nav.home, href: `/${locale}` },
+    { key: "about" as const, label: dict.nav.about, href: `/${locale}/about` },
+    { key: "projects" as const, label: dict.nav.projects, href: `/${locale}/projects` },
+    { key: "skills" as const, label: dict.nav.skills, href: `/${locale}/skills` },
+    { key: "contact" as const, label: dict.nav.contact, href: `/${locale}/contact` },
   ];
 
   const switchLocaleUrl = () => {
@@ -33,7 +33,7 @@ export default function Navbar({ locale }: { locale: string }) {
   return (
     <>
       {/* =========================================
-          VERSI DESKTOP (Normal di Atas)
+          VERSI DESKTOP (Normal di Atas) — tidak diubah
           ========================================= */}
       <header
         className={`hidden md:flex fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -50,7 +50,7 @@ export default function Navbar({ locale }: { locale: string }) {
               const isActive = pathname === link.href;
               return (
                 <Link
-                  key={link.label}
+                  key={link.key}
                   href={link.href}
                   className={`text-sm font-medium transition-colors hover:text-accent ${
                     isActive ? "text-accent" : "text-textPrimary/70"
@@ -75,7 +75,7 @@ export default function Navbar({ locale }: { locale: string }) {
       </header>
 
       {/* =========================================
-          VERSI MOBILE (Logo & Bahasa di Atas)
+          VERSI MOBILE (Logo & Bahasa di Atas) — tidak diubah
           ========================================= */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 p-5 flex justify-between items-center pointer-events-none">
         <Link href={`/${locale}`} className="text-xl font-bold tracking-tighter text-textPrimary pointer-events-auto mix-blend-difference text-white">
@@ -90,27 +90,27 @@ export default function Navbar({ locale }: { locale: string }) {
       </div>
 
       {/* =========================================
-          VERSI MOBILE (Navbar Solid di Dasar Bawah, Tidak Ngambang)
+          VERSI MOBILE (Navbar Bawah) — teks diperbesar,
+          padding tap area dinaikin biar tetep nyaman dipencet
           ========================================= */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-borderLight pb-safe">
-        <div className="flex items-center justify-between w-full">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.label}
-                href={link.href}
-                // PERUBAHAN: py-2 diganti py-4 untuk area klik yang lebih luas, text-[10px] diganti text-xs
-                className={`flex-1 text-center py-4 text-xs font-bold uppercase tracking-wider transition-colors ${
-                  isActive ? "text-accent" : "text-textPrimary/60"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
+      <div className="flex items-center justify-between w-full px-5">
+        {navLinks.map((link) => {
+          const isActive = pathname === link.href;
+          return (
+            <Link
+              key={link.key}
+              href={link.href}
+              className={`py-4 text-sm font-bold uppercase whitespace-nowrap transition-colors ${
+                isActive ? "text-accent" : "text-textPrimary/60"
+              }`}
+            >
+              {link.label}
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
     </>
   );
 }

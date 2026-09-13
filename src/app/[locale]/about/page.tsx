@@ -6,6 +6,28 @@ import { motion, useReducedMotion, Variants } from "framer-motion";
 import { getDictionary, Locale } from "@/lib/i18n/dictionaries";
 import Tag from "@/components/ui/Tag";
 
+// Data Sertifikat (Sesuai dengan data presisi dari screenshot portal verifikasi)
+const certificates = [
+  {
+    title: "MikroTik Certified Network Associate (MTCNA)",
+    issuer: "Politeknik Caltex Riau",
+    date: "Jul 29, 2026",
+    image: "/images/mtcna.png",
+  },
+  {
+    title: "CCNA: Switching, Routing, and Wireless Essentials",
+    issuer: "Cisco Networking Academy",
+    date: "Jan 14, 2026",
+    image: "/images/ccna-srwe.png",
+  },
+  {
+    title: "CCNA: Introduction to Networks",
+    issuer: "Cisco Networking Academy",
+    date: "Jan 14, 2026",
+    image: "/images/ccna-itn.png",
+  }
+];
+
 export default function About({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = use(params);
   const shouldReduceMotion = useReducedMotion();
@@ -14,8 +36,6 @@ export default function About({ params }: { params: Promise<{ locale: Locale }> 
   // Spotlight Grid State
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  // Menggunakan useEffect untuk melacak mouse di level window agar spotlight tetap 
-  // akurat meskipun halaman di-scroll ke bawah
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -42,12 +62,12 @@ export default function About({ params }: { params: Promise<{ locale: Locale }> 
   };
 
   return (
-    <main className="relative min-h-screen pt-32 pb-24 px-6 md:px-8 group">
+    <main className="relative min-h-screen pt-32 pb-24 px-6 md:px-8 group overflow-hidden">
       
       {/* Background Dasar (Redup) */}
       <div className="fixed inset-0 z-[-2] bg-[radial-gradient(#E4E2DD_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80 pointer-events-none" />
       
-      {/* Efek Senter yang Diperkuat (100% Terang, Radius 450px, Titik 2px) */}
+      {/* Efek Senter yang Diperkuat */}
       {!shouldReduceMotion && (
         <div 
           className="fixed inset-0 z-[-1] bg-[radial-gradient(#3B4A3F_2px,transparent_2px)] [background-size:24px_24px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
@@ -64,6 +84,7 @@ export default function About({ params }: { params: Promise<{ locale: Locale }> 
         <div className="grid md:grid-cols-12 gap-12 md:gap-16 items-center">
           
           {/* Foto Profil */}
+          {/* Foto Profil */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -72,14 +93,18 @@ export default function About({ params }: { params: Promise<{ locale: Locale }> 
           >
             <motion.div 
               whileHover={{ scale: 1.03, rotate: 1 }}
+              // PERUBAHAN 1: Menambahkan whileTap agar ada efek memantul saat disentuh di HP
+              whileTap={{ scale: 0.97, rotate: -1 }}
               transition={{ duration: 0.3 }}
-              className="relative aspect-[4/5] w-full rounded-lg overflow-hidden bg-background/50 backdrop-blur-sm border border-borderLight"
+              // PERUBAHAN 2: Menambahkan cursor-pointer agar layar sentuh merespons elemen ini
+              className="relative aspect-[4/5] w-full rounded-lg overflow-hidden bg-background/50 backdrop-blur-sm border border-borderLight cursor-pointer"
             >
               <Image 
                 src="/images/foto_profile.png" 
                 alt={dict.about.title}
                 fill
-                className="object-cover grayscale hover:grayscale-0 transition-all duration-700 ease-in-out"
+                // PERUBAHAN 3: Menambahkan active:grayscale-0 agar warna muncul saat ditekan
+                className="object-cover grayscale hover:grayscale-0 active:grayscale-0 transition-all duration-700 ease-in-out"
                 sizes="(max-width: 768px) 100vw, 33vw"
                 priority
               />
@@ -91,7 +116,7 @@ export default function About({ params }: { params: Promise<{ locale: Locale }> 
             variants={listContainerVariant}
             initial="hidden"
             animate="visible"
-            className="md:col-span-7 lg:col-span-8 flex flex-col justify-center h-full"
+            className="md:col-span-7 lg:col-span-8 flex flex-col justify-center h-full bg-background/80 backdrop-blur-md p-6 md:p-8 -mx-6 md:-mx-8 rounded-2xl border border-borderLight/30 shadow-sm"
           >
             <motion.h1 variants={fadeUpVariant} className="text-3xl md:text-4xl font-semibold mb-6">
               {dict.about.title}
@@ -161,9 +186,7 @@ export default function About({ params }: { params: Promise<{ locale: Locale }> 
             <div className="relative border-l border-borderLight ml-[5px] space-y-10">
               {dict.about.journey.map((item: any, idx: number) => (
                 <motion.div variants={fadeUpVariant} key={idx} className="relative pl-8">
-                  {/* Timeline dot */}
                   <div className="absolute w-3 h-3 bg-background border-2 border-accent rounded-full -left-[6.5px] top-1.5" />
-                  
                   <span className="text-xs font-heading text-textPrimary/50 uppercase tracking-wider block mb-1">
                     {item.year}
                   </span>
@@ -177,6 +200,65 @@ export default function About({ params }: { params: Promise<{ locale: Locale }> 
           </motion.section>
 
         </div>
+
+        {/* DIVIDER */}
+        <motion.div 
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          style={{ originX: 0 }}
+          className="my-20 h-px bg-borderLight w-full"
+        />
+
+        {/* CERTIFICATIONS SECTION */}
+        <motion.section
+          variants={listContainerVariant}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ amount: 0.1, once: true }}
+          className="w-full"
+        >
+          <motion.h2 variants={fadeUpVariant} className="text-sm font-medium uppercase tracking-[0.1em] text-textPrimary/50 mb-8">
+            Licenses & Certifications
+          </motion.h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {certificates.map((cert, idx) => (
+              <motion.div 
+                key={idx}
+                variants={fadeUpVariant}
+                whileHover={{ y: -5 }}
+                className="group flex flex-col bg-background/60 backdrop-blur-md border border-borderLight/50 rounded-xl overflow-hidden hover:border-accent transition-colors"
+              >
+                {/* Image Placeholder */}
+                <div className="relative w-full aspect-[4/3] bg-background/80 border-b border-borderLight/30 overflow-hidden flex items-center justify-center p-4">
+                  <Image 
+                    src={cert.image} 
+                    alt={cert.title} 
+                    fill 
+                    className="object-contain p-4 group-hover:scale-105 transition-transform duration-500" 
+                  />
+                </div>
+                {/* Text Content */}
+                <div className="p-5 flex flex-col flex-grow justify-between">
+                  <div>
+                    <h3 className="font-semibold text-textPrimary leading-tight mb-2">
+                      {cert.title}
+                    </h3>
+                    <p className="text-sm text-textPrimary/70">
+                      {cert.issuer}
+                    </p>
+                  </div>
+                  <p className="text-xs font-heading text-textPrimary/50 mt-4 uppercase tracking-wide">
+                    Issued {cert.date}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
       </div>
     </main>
   );

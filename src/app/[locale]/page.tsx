@@ -45,8 +45,6 @@ const socialIcons = [
   }
 ];
 
-const MotionLink = motion(Link);
-
 export default function Home({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = use(params);
   const shouldReduceMotion = useReducedMotion();
@@ -90,13 +88,14 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
     },
   };
 
+  const marqueeData = dict.home?.marqueeItems || [];
+
   return (
-    <div className="flex flex-col flex-1 w-full min-h-[85vh] lg:min-h-[auto]">
+    <div className="flex flex-col flex-1 w-full min-h-[90vh] md:min-h-[calc(100vh-5rem)]">
       <section 
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        // KITA KEMBALIKAN flex-1 AGAR HERO MEMANJANG OTOMATIS MEMAKAN SISA LAYAR KOSONG
-        className="relative flex flex-1 flex-col justify-center pt-24 md:pt-32 pb-16 md:pb-20 px-6 md:px-8 overflow-hidden group"
+        className="relative flex flex-1 flex-col justify-center pt-16 md:pt-10 pb-32 md:pb-10 px-6 md:px-8 overflow-hidden group"
       >
         {/* Background Dasar Redup */}
         <div className="absolute inset-0 z-[-2] bg-[radial-gradient(#E4E2DD_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80 pointer-events-none" />
@@ -112,10 +111,15 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
           />
         )}
 
-        <div className="w-full max-w-[1200px] mx-auto grid md:grid-cols-12 gap-8 items-center">
+        <div className="w-full max-w-[1200px] mx-auto grid md:grid-cols-12 gap-8 items-center relative z-10">
           
           {/* Bagian Kiri: Teks & Tombol */}
-          <motion.div variants={container} initial="hidden" animate="visible" className="md:col-span-7 lg:col-span-8 z-10 pointer-events-auto">
+          <motion.div 
+            variants={container} 
+            initial="hidden" 
+            animate="visible" 
+            className="md:col-span-7 lg:col-span-8 z-10 pointer-events-auto"
+          >
             <motion.div variants={item} className="flex items-center gap-2 mb-5">
               <span className="w-2 h-2 rounded-[2px] bg-accent" />
               <span className="text-xs md:text-sm font-medium uppercase tracking-[0.12em] text-textPrimary/70">
@@ -127,21 +131,20 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
               {dict.home.title}
             </motion.h1>
 
-            <motion.p variants={item} className="mt-6 text-base md:text-lg leading-[1.6] text-textPrimary/80 max-w-[560px]">
+            <motion.p variants={item} className="mt-6 text-base md:text-lg leading-[1.6] text-textPrimary/90 max-w-[560px] bg-background/60 backdrop-blur-sm py-2 px-3 -mx-3 rounded-lg border border-borderLight/30">
               {dict.home.intro}
             </motion.p>
 
-            {/* BARIS TOMBOL UTAMA (View Projects & CV) */}
+            {/* BARIS TOMBOL UTAMA */}
             <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-4">
-              <MotionLink
-                href={`/${locale}/projects`}
-                whileHover={{ opacity: 0.85 }}
-                whileTap={{ scale: 0.97 }}
-                transition={{ duration: 0.15 }}
-                className="px-6 py-3 rounded-[4px] text-base font-medium bg-accent text-background inline-flex items-center justify-center"
-              >
-                {dict.home.viewProjects}
-              </MotionLink>
+              <motion.div whileHover={{ opacity: 0.85 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
+                <Link
+                  href={`/${locale}/projects`}
+                  className="px-6 py-3 rounded-[4px] text-base font-medium bg-accent text-background inline-flex items-center justify-center block"
+                >
+                  {dict.home.viewProjects}
+                </Link>
+              </motion.div>
 
               <Button
                 variant="secondary"
@@ -153,7 +156,7 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
               </Button>
             </motion.div>
 
-            {/* BARIS IKON SOSIAL (Pengganti Teks) */}
+            {/* BARIS IKON SOSIAL */}
             <motion.div variants={item} className="mt-6 flex flex-wrap items-center gap-3">
               {socialIcons.map((social) => (
                 <a 
@@ -161,7 +164,7 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
                   href={social.url}
                   target={social.name === "Email" ? undefined : "_blank"}
                   rel={social.name === "Email" ? undefined : "noopener noreferrer"}
-                  className="flex items-center justify-center w-[48px] h-[48px] border border-borderLight rounded-[4px] text-textPrimary/70 hover:border-accent hover:text-accent hover:bg-accent/5 bg-background/50 backdrop-blur-sm transition-all duration-300 group"
+                  className="flex items-center justify-center w-[48px] h-[48px] border border-borderLight rounded-[4px] text-textPrimary/70 hover:border-accent hover:text-accent hover:bg-accent/10 bg-background/80 backdrop-blur-sm transition-all duration-300 group"
                   title={social.name}
                 >
                   <div className="transform group-hover:scale-110 transition-transform duration-300">
@@ -196,14 +199,13 @@ export default function Home({ params }: { params: Promise<{ locale: Locale }> }
       </section>
 
       {/* MARQUEE */}
-      {/* JURUS PAMUNGKAS: mt-auto memaksa Marquee turun ke paling bawah kontainer */}
-      <section className="relative flex shrink-0 overflow-x-hidden bg-accent text-background py-4 md:py-5 border-y border-borderLight mt-auto">
+      <section className="relative flex shrink-0 overflow-x-hidden bg-accent text-background py-4 md:py-5 border-y border-borderLight mt-auto mb-3 md:mb-0">
         <motion.div
           animate={shouldReduceMotion ? {} : { x: ["0%", "-50%"] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
           className="flex whitespace-nowrap items-center"
         >
-          {[...dict.home.marqueeItems, ...dict.home.marqueeItems].map((item, index) => (
+          {[...marqueeData, ...marqueeData].map((item, index) => (
             <div key={index} className="flex items-center">
               <span className="mx-6 text-sm md:text-base font-medium tracking-wide uppercase">
                 {item}

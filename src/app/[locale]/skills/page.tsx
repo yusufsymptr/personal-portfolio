@@ -66,6 +66,8 @@ export default function Skills({ params }: { params: Promise<{ locale: Locale }>
       fullstackDesc: "Websites, dashboards, admin systems, and modern interactive UI.",
       backend: "Backend, API & Database",
       backendDesc: "Server logic, relational storage, and APIs.",
+      network: "Networking & Infrastructure",
+      networkDesc: "Routing, switching, wireless, and network security protocols.",
       ml: "Machine Learning & AI",
       mlDesc: "Data patterns, models, and AI workflow.",
       mobile: "Mobile Utilities",
@@ -83,6 +85,8 @@ export default function Skills({ params }: { params: Promise<{ locale: Locale }>
       fullstackDesc: "Situs web, dasbor, sistem admin, dan UI interaktif modern.",
       backend: "Backend, API & Basis Data",
       backendDesc: "Logika server, penyimpanan relasional, dan API.",
+      network: "Jaringan & Infrastruktur",
+      networkDesc: "Routing, switching, nirkabel, dan protokol keamanan jaringan.",
       ml: "Machine Learning & AI",
       mlDesc: "Pola data, pemodelan, dan alur kerja kecerdasan buatan.",
       mobile: "Utilitas Mobile",
@@ -99,6 +103,7 @@ export default function Skills({ params }: { params: Promise<{ locale: Locale }>
   const webTools1 = ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Next.js"];
   const webTools2 = ["Laravel", "PHP", "Tailwind CSS", "Bootstrap", "Framer Motion"];
   const backendTools = ["Java", "Node.js", "Express", "Supabase", "PostgreSQL", "MySQL", "Prisma", "RESTful API"];
+  const networkTools = ["Cisco IOS", "MikroTik RouterOS", "VLAN & STP", "OSPF", "IPv4/IPv6", "WLAN", "Packet Tracer", "Network Security"];
   const mlTools = ["Python", "TensorFlow", "Scikit-Learn", "Pandas", "Jupyter", "OpenAI API"];
   const mobileTools = ["React Native", "Flutter", "Dart", "Expo", "Kotlin"];
   const archPlanTools = ["Mermaid.js", "Draw.io", "Microsoft Project", "Jira", "Notion"];
@@ -170,15 +175,15 @@ export default function Skills({ params }: { params: Promise<{ locale: Locale }>
             </div>
           </div>
 
-          {/* 2. BACKEND, API & DATABASE */}
-          <div className="md:col-span-1 p-6 md:p-8 rounded-2xl bg-background hover:bg-accent border border-borderLight transition-all duration-500 relative overflow-hidden group/card flex flex-col justify-between cursor-default shadow-sm">
+          {/* 2. BACKEND, API & DATABASE (Lebar 2 Kolom) */}
+          <div className="md:col-span-2 p-6 md:p-8 rounded-2xl bg-background hover:bg-accent border border-borderLight transition-all duration-500 relative overflow-hidden group/card flex flex-col justify-between cursor-default shadow-sm">
             <div className="absolute top-0 right-0 w-32 h-32 bg-accent/0 group-hover/card:bg-background/10 blur-[50px] rounded-full transition-colors duration-700"></div>
 
             <div className="relative z-10">
               <h3 className="text-lg md:text-xl font-bold mb-2 text-textPrimary group-hover/card:text-background transition-colors duration-500">
                 {t.backend}
               </h3>
-              <p className="text-xs text-textPrimary/60 group-hover/card:text-background/80 transition-colors duration-500 mb-6">
+              <p className="text-xs md:text-sm text-textPrimary/60 group-hover/card:text-background/80 transition-colors duration-500 mb-6">
                 {t.backendDesc}
               </p>
 
@@ -186,20 +191,7 @@ export default function Skills({ params }: { params: Promise<{ locale: Locale }>
             </div>
           </div>
 
-          {/* 3. MACHINE LEARNING & AI */}
-          <div className="md:col-span-1 p-6 md:p-8 rounded-2xl bg-background hover:bg-accent border border-borderLight transition-all duration-500 flex flex-col justify-between group/card cursor-default shadow-sm">
-            <div className="relative z-10">
-              <h3 className="text-lg md:text-xl font-bold text-textPrimary group-hover/card:text-background transition-colors duration-500 mb-2">
-                {t.ml}
-              </h3>
-              <p className="text-xs text-textPrimary/60 group-hover/card:text-background/80 transition-colors duration-500 mb-6">
-                {t.mlDesc}
-              </p>
-              <MarqueeRow items={mlTools} duration={20} reverse />
-            </div>
-          </div>
-
-          {/* 4. MOBILE DEVELOPMENT */}
+          {/* 3. MOBILE DEVELOPMENT (Lebar 1 Kolom) */}
           <div className="md:col-span-1 p-6 md:p-8 rounded-2xl bg-background hover:bg-accent border border-borderLight transition-all duration-500 flex flex-col justify-between group/card cursor-default shadow-sm">
             <div className="relative z-10">
               <h3 className="text-lg md:text-xl font-bold text-textPrimary group-hover/card:text-background transition-colors duration-500 mb-2">
@@ -212,7 +204,35 @@ export default function Skills({ params }: { params: Promise<{ locale: Locale }>
             </div>
           </div>
 
-          {/* 5. PROJECT DELIVERY */}
+          {/* 4. NETWORKING & INFRASTRUCTURE (Lebar 2 Kolom) */}
+          <div className="md:col-span-2 p-6 md:p-8 rounded-2xl bg-background hover:bg-accent border border-borderLight transition-all duration-500 relative overflow-hidden group/card flex flex-col justify-between cursor-default shadow-sm">
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent/0 group-hover/card:bg-background/10 blur-[50px] rounded-full transition-colors duration-700"></div>
+
+            <div className="relative z-10">
+              <h3 className="text-lg md:text-xl font-bold text-textPrimary group-hover/card:text-background transition-colors duration-500 mb-2">
+                {t.network}
+              </h3>
+              <p className="text-xs md:text-sm text-textPrimary/60 group-hover/card:text-background/80 transition-colors duration-500 mb-6">
+                {t.networkDesc}
+              </p>
+              <MarqueeRow items={networkTools} duration={24} reverse variant="accent" />
+            </div>
+          </div>
+
+          {/* 5. MACHINE LEARNING & AI (Lebar 1 Kolom) */}
+          <div className="md:col-span-1 p-6 md:p-8 rounded-2xl bg-background hover:bg-accent border border-borderLight transition-all duration-500 flex flex-col justify-between group/card cursor-default shadow-sm">
+            <div className="relative z-10">
+              <h3 className="text-lg md:text-xl font-bold text-textPrimary group-hover/card:text-background transition-colors duration-500 mb-2">
+                {t.ml}
+              </h3>
+              <p className="text-xs text-textPrimary/60 group-hover/card:text-background/80 transition-colors duration-500 mb-6">
+                {t.mlDesc}
+              </p>
+              <MarqueeRow items={mlTools} duration={20} />
+            </div>
+          </div>
+
+          {/* 6. PROJECT DELIVERY */}
           <div className="md:col-span-3 p-6 md:p-8 rounded-2xl bg-background hover:bg-accent border border-borderLight transition-all duration-500 group/card cursor-default shadow-sm">
             <div className="mb-6 relative z-10">
               <h3 className="text-xl md:text-2xl font-bold text-textPrimary group-hover/card:text-background transition-colors duration-500 mb-2">

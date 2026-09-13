@@ -12,7 +12,7 @@ const dictionaries = {
     home: {
       role: "Software Engineering Enthusiast",
       title: "YUSUF SYAMPUTRA",
-      intro: "I enjoy building things for the web and exploring how technology can solve real problems. Currently exploring my path toward Machine Learning.",
+      intro: "I like building things for the web and figuring out how tech can actually solve real problems, not just stay stuck in theory. Right now I'm branching out from web development into Machine Learning and data driven stuff.",
       viewProjects: "View Projects",
       viewCV: "View CV",
       cvUnavailable: "CV coming soon",
@@ -23,7 +23,7 @@ const dictionaries = {
     },
     about: {
       title: "About Me",
-      bio: "I am a 5th-semester Informatics Engineering student who enjoys building full stack web applications. I spend a lot of my time working with backend logic and frameworks like Laravel to create systems that just work. Moving forward, my main competency focus is expanding my skills into Mobile Development and Machine Learning. I always keep one personal motto in mind: I may not be #1, but I'm beyond #2.",
+      bio: "I'm in my 5th semester of Informatics Engineering, and most of what I do day to day is build full stack web apps. I spend a lot of my time on the backend side, mostly with Laravel, making sure things actually work end to end. Lately I've also been trying to branch out into Mobile Development and Machine Learning. My motto's pretty simple though: I might not be #1, but I'm definitely more than #2.",
       educationTitle: "Education",
       education: [
         {
@@ -42,12 +42,12 @@ const dictionaries = {
         {
           year: "Present",
           title: "ITSA Member",
-          description: "Active member of the Informatics Engineering Student Association (ITSA) at Politeknik Caltex Riau, participating in various technical and organizational initiatives."
+          description: "Active in ITSA, the Informatics Engineering Student Association at PCR, helping out with technical events and everyday organizational stuff."
         },
         {
           year: "2025 - 2026",
           title: "Community Chairperson",
-          description: "Leading a student community representing students from West Sumatra, managing organizational structures and events."
+          description: "Leading a student community for people from West Sumatra on campus, handling the organizational structure and running events for members."
         }
       ],
       interestsTitle: "Current Focus & Interests",
@@ -143,7 +143,7 @@ const dictionaries = {
     home: {
       role: "Software Engineering Enthusiast",
       title: "YUSUF SYAMPUTRA",
-      intro: "Saya senang membangun sesuatu untuk web dan mengeksplorasi bagaimana teknologi bisa menyelesaikan masalah nyata. Saat ini saya sedang mendalami Machine Learning.",
+      intro: "Saya suka bikin hal-hal buat web dan cari tahu gimana teknologi bisa benar-benar menyelesaikan masalah nyata, bukan cuma teori doang. Sekarang saya lagi coba merambah dari web development ke Machine Learning dan hal-hal berbasis data.",
       viewProjects: "Lihat Proyek",
       viewCV: "Lihat CV",
       cvUnavailable: "CV segera hadir",
@@ -154,7 +154,7 @@ const dictionaries = {
     },
     about: {
       title: "Tentang Saya",
-      bio: "Saya adalah mahasiswa Teknik Informatika semester 5 yang suka membangun aplikasi web full stack. Saya menghabiskan banyak waktu mengurus backend dan menggunakan framework seperti Laravel untuk membuat sistem yang berjalan lancar. Ke depannya, fokus kompetensi utama saya adalah memperdalam keahlian di bidang Pengembangan Mobile dan Machine Learning. Saya selalu berpegang pada satu moto pribadi: Mungkin saya bukan nomor 1, tapi saya jauh melampaui nomor 2.",
+      bio: "Saya mahasiswa Teknik Informatika semester 5, dan sebagian besar waktu saya dihabiskan buat bikin aplikasi web full stack. Saya lebih sering main di sisi backend, terutama pakai Laravel, mastiin semuanya jalan dengan baik dari ujung ke ujung. Belakangan ini saya juga mulai coba-coba merambah ke Mobile Development dan Machine Learning. Tapi moto saya tetap simpel: mungkin saya bukan yang nomor satu, tapi saya jauh di atas nomor dua.",
       educationTitle: "Pendidikan",
       education: [
         {
@@ -173,12 +173,12 @@ const dictionaries = {
         {
           year: "Sekarang",
           title: "Anggota ITSA",
-          description: "Anggota aktif Himpunan Mahasiswa Teknik Informatika (ITSA) di Politeknik Caltex Riau, berpartisipasi dalam berbagai inisiatif teknis maupun organisasi."
+          description: "Aktif di ITSA, Himpunan Mahasiswa Teknik Informatika di PCR, bantu-bantu di kegiatan teknis sama urusan organisasi sehari-hari."
         },
         {
           year: "2025 - 2026",
           title: "Ketua Komunitas",
-          description: "Memimpin paguyuban/komunitas mahasiswa asal Sumatera Barat di kampus, mengelola struktur organisasi dan berbagai kegiatan kemahasiswaan."
+          description: "Mimpin komunitas mahasiswa asal Sumatera Barat di kampus, ngurusin struktur organisasi sampai jalannya acara buat anggota."
         }
       ],
       interestsTitle: "Fokus & Eksplorasi",

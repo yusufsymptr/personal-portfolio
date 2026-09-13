@@ -7,13 +7,39 @@ import { useEffect } from "react";
 // Memori global untuk mengingat halaman terakhir yang dikunjungi
 let lastVisitedPage = "";
 
+// Kamus statis untuk animasi transisi agar super cepat (tidak perlu load file eksternal)
+const pageTranslations: Record<string, Record<string, string>> = {
+  en: {
+    home: "HOME",
+    about: "ABOUT",
+    projects: "PROJECTS",
+    skills: "SKILLS",
+    contact: "CONTACT",
+  },
+  id: {
+    home: "BERANDA",
+    about: "TENTANG",
+    projects: "PROYEK",
+    skills: "KEAHLIAN",
+    contact: "KONTAK",
+  },
+};
+
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  // Memecah URL (/en/about -> 'about') untuk mengetahui nama halaman murni
+  // Memecah URL (/en/about)
   const pathSegments = pathname.split('/').filter(Boolean);
-  const pageName = pathSegments.length > 1 ? pathSegments[1] : "HOME";
+  
+  // Ambil bahasa dari URL (misal 'en' atau 'id')
+  const locale = pathSegments[0] || 'en';
   const routeKey = pathSegments.slice(1).join('/') || 'home';
+  
+  // Ambil nama rute mentah (misal 'about')
+  const rawPageName = pathSegments.length > 1 ? pathSegments[1] : "home";
+  
+  // Terjemahkan nama halaman berdasarkan bahasa yang aktif
+  const translatedPageName = pageTranslations[locale]?.[rawPageName] || rawPageName.toUpperCase();
 
   // Jika halaman saat ini SAMA dengan halaman terakhir, berarti kita cuma ganti bahasa
   const isLanguageSwitch = lastVisitedPage === routeKey;
@@ -52,7 +78,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
           animate={{ opacity: [0, 1, 0], x: [60, 0, -60] }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
         >
-          {pageName}
+          {translatedPageName}
         </motion.h1>
       </motion.div>
 
